@@ -31,8 +31,8 @@ const Notification = styled.div`
 `;
 
 const LOGIN_MUTATION = gql`
-  mutation login($username: String!, $password: String!) {
-    login(userName: $username, password: $password) {
+  mutation login($userName: String!, $password: String!) {
+    login(userName: $userName, password: $password) {
       ok
       token
       error
@@ -77,6 +77,7 @@ function Login() {
   });
 
   const onSubmitValid = data => {
+    console.log(data);
     if (loading) {
       return;
     }

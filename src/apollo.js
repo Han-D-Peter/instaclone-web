@@ -1,11 +1,11 @@
 import {
   ApolloClient,
   ApolloLink,
-  concat,
   HttpLink,
   InMemoryCache,
   makeVar,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 
 const TOKEN = "token";
 const DARK_MODE = "DARK_MODE";
@@ -53,7 +53,16 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
+const onErrorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log(`GraphQL Error`, graphQLErrors);
+  }
+  if (networkError) {
+    console.log("Network Error", networkError);
+  }
+});
+
 export const client = new ApolloClient({
-  link: concat(authMiddleware, httpLink),
+  link: authMiddleware.concat(onErrorLink).concat(httpLink),
   cache: new InMemoryCache(),
 });
